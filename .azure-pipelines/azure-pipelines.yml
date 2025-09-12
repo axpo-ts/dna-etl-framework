@@ -1,0 +1,106 @@
+# Azure DevOps Pipeline for DNA ETL Framework
+# Build and publish TypeScript package to Azure Artifacts
+
+trigger:
+  branches:
+    include:
+    - main
+    - develop
+  tags:
+    include:
+    - v*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  packageVersion: '$(Build.BuildNumber)'
+
+stages:
+- stage: Build
+  displayName: 'Build and Test'
+  jobs:
+  - job: BuildJob
+    displayName: 'Build TypeScript Package'
+    steps:
+    - task: NodeTool@0
+      displayName: 'Use Node.js 20.x'
+      inputs:
+        versionSpec: '20.x'
+
+    - task: npmAuthenticate@0
+      displayName: 'Authenticate to Azure Artifacts'
+      inputs:
+        workingFile: '.npmrc'
+        customEndpoint: 'axpo-ts-artifacts'
+
+    - script: |
+        npm ci
+      displayName: 'Install dependencies'
+
+    - script: |
+        npm run lint
+      displayName: 'Run linting'
+      continueOnError: false
+
+    - script: |
+        npm run build
+      displayName: 'Build TypeScript'
+
+    - script: |
+        npm test
+      displayName: 'Run tests'
+      continueOnError: false
+
+    - task: PublishTestResults@2
+      displayName: 'Publish test results'
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/test-results.xml'
+        mergeTestResults: true
+      condition: succeededOrFailed()
+
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Publish code coverage'
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '**/coverage/cobertura-coverage.xml'
+      condition: succeededOrFailed()
+
+- stage: Publish
+  displayName: 'Publish to Azure Artifacts'
+  dependsOn: Build
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
+  jobs:
+  - deployment: PublishJob
+    displayName: 'Publish Package'
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: NodeTool@0
+            displayName: 'Use Node.js 20.x'
+            inputs:
+              versionSpec: '20.x'
+
+          - task: npmAuthenticate@0
+            displayName: 'Authenticate to Azure Artifacts'
+            inputs:
+              workingFile: '.npmrc'
+              customEndpoint: 'axpo-ts-artifacts'
+
+          - script: |
+              npm ci
+            displayName: 'Install dependencies'
+
+          - script: |
+              npm run build
+            displayName: 'Build package'
+
+          - script: |
+              npm publish
+            displayName: 'Publish to Azure Artifacts'
+            env:
+              NPM_TOKEN: $(NPM_TOKEN)
