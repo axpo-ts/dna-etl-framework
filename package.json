@@ -1,0 +1,44 @@
+{
+  "name": "@axpo-ts/dna-etl-framework",
+  "version": "1.0.0",
+  "description": "DNA ETL Framework providing standardized patterns, components, and tooling to build reliable, observable, and scalable ETL pipelines at Axpo.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "etl",
+    "data-pipeline",
+    "typescript",
+    "axpo",
+    "framework"
+  ],
+  "author": "Axpo TypeScript Team",
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://pkgs.dev.azure.com/axpo/_packaging/axpo-ts/npm/registry/"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "rimraf": "^5.0.0",
+    "ts-jest": "^29.4.1",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
