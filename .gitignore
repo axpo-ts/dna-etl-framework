@@ -9,6 +9,9 @@ dist/
 build/
 *.tsbuildinfo
 
+# Package files
+*.tgz
+
 # Coverage reports
 coverage/
 *.lcov
