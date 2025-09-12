@@ -1,0 +1,42 @@
+# Example DNA ETL Pipeline Configuration
+# This is a sample configuration file for the DNA ETL Framework
+
+pipeline:
+  name: "sample_etl_pipeline"
+  description: "A sample ETL pipeline configuration"
+  version: "1.0.0"
+
+steps:
+  - name: "extract_data"
+    type: "extractor"
+    config:
+      source: "database"
+      connection_string: "sqlite:///sample.db"
+      query: "SELECT * FROM raw_data"
+  
+  - name: "transform_data"
+    type: "transformer"
+    config:
+      operations:
+        - "clean_nulls"
+        - "normalize_dates"
+        - "validate_schema"
+  
+  - name: "load_data"
+    type: "loader"
+    config:
+      destination: "warehouse"
+      table: "processed_data"
+      mode: "append"
+
+settings:
+  logging:
+    level: "INFO"
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  monitoring:
+    enabled: true
+    metrics:
+      - "execution_time"
+      - "record_count"
+      - "error_rate"
