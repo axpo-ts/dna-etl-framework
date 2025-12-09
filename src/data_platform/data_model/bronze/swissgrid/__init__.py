@@ -1,0 +1,2 @@
+from data_platform.data_model.bronze.swissgrid.activation_signal import activation_signal_table
+from data_platform.data_model.bronze.swissgrid.afrr_activations import afrr_activations_table

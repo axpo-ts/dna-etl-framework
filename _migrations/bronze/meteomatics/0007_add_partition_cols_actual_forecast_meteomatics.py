@@ -1,0 +1,101 @@
+# Databricks notebook source
+# DBTITLE 1,Table Mappings
+import json
+
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder.getOrCreate()
+
+
+# COMMAND ----------
+
+# DBTITLE 1,Catalog and Schema Configuration
+catalog_prefix = dbutils.widgets.get("env_catalog_identifier")  # type: ignore # noqa: F821
+schema_prefix = dbutils.widgets.get("schema_prefix")  # type: ignore # noqa: F821
+schema = "meteomatics"
+catalog = "bronze"
+
+tables = ["forecast_meteomatics", "actual_meteomatics"]
+
+
+def get_table_ddl_script(catalog: str, schema: str, target_table: str) -> str:
+    """Generate the DDL script for creating a table with an auto-increment identity column.
+
+    Args:
+        catalog (str): The catalog name.
+        schema (str): The schema name.
+        target_table (str): The target table name.
+
+    Returns:
+        str: The DDL script for creating the table.
+    """
+    src_table = f"{catalog}.{schema}.{target_table}"
+    df = spark.sql(
+        f"select column_name from `system_tables_sharing`.system_tables_information_schema.constraint_column_usage "
+        f"where lower(table_name) = '{target_table}' and lower(table_schema) = '{schema}' "
+        f"and lower(table_catalog) = '{catalog}' and lower(constraint_name) = 'pk_{target_table}'"
+    ).collect()
+    pk = [row.column_name for row in df]
+    result = []
+    primary_key_str = ""
+    if any(pk):
+        primary_key_str = f", CONSTRAINT pk_{target_table} PRIMARY KEY({', '.join(pk)})"
+    # Retrieve schema from schema(if provided in dlt config), otherwise from source table
+    schema = spark.read.table(src_table).schema.json()
+    schema_json = json.loads(schema)
+
+    # Build the DDL string from schema fields
+    for metadata in schema_json["fields"]:
+        if "table_id" not in metadata["name"]:
+            if isinstance(metadata["type"], dict):
+                field_type = f"{metadata['type']['type']}<{metadata['type']['elementType']}>"
+            else:
+                field_type = metadata["type"]
+            not_nullble = " NOT NULL" if metadata["name"] in pk else ""
+            comment = f" COMMENT '{metadata['metadata']['comment']}'" if "comment" in metadata["metadata"] else ""
+            result.append(f"{metadata['name']} {field_type}{not_nullble}{comment}")
+
+    return ", ".join(result) + primary_key_str
+
+
+def get_table_comment(table_name: str) -> str:
+    """Retrieves the comment associated with a specified table in Spark.
+
+    Args:
+        table_name (str): The name of the table for which to retrieve the comment.
+
+    Returns:
+        str: The comment of the table in the format "COMMENT 'comment_text'",
+                or an empty string if no comment is found.
+    """
+    tbl_metadata = spark.sql(f"DESCRIBE EXTENDED {table_name}").filter('col_name = "Comment"').first()
+    table_comment = f"COMMENT '{tbl_metadata.data_type}'" if tbl_metadata and tbl_metadata.data_type else ""
+    return table_comment
+
+
+for table in tables:
+    full_table = f"{catalog_prefix}bronze.{schema_prefix}{schema}.{table}"
+    if spark.catalog.tableExists(full_table):
+        columns = spark.catalog.listColumns(full_table)
+        partition_columns = [col.name for col in columns if col.isPartition]
+        if "curve_name" not in partition_columns:
+            print(f"processing table : {full_table}")
+            ddl = get_table_ddl_script(f"{catalog_prefix}bronze", f"{schema_prefix}{schema}", table)
+            tbl_comment = get_table_comment(full_table)
+            query = f"""CREATE TABLE IF NOT EXISTS {full_table} (
+                    {ddl}
+                ) PARTITIONED BY (curve_name) {tbl_comment}
+                TBLPROPERTIES('delta.feature.allowColumnDefaults' = 'supported')"""
+            print(f"query : {query}")
+            spark.sql(f"ALTER TABLE {full_table} DROP CONSTRAINT IF EXISTS pk_{table}")
+            spark.sql(f"ALTER TABLE {full_table} RENAME TO {full_table}_backup")
+            spark.sql(query)
+            (
+                spark.read.table(f"{full_table}_backup")
+                .drop("table_id")
+                .write.format("delta")
+                .partitionBy("curve_name")
+                .mode("append")
+                .saveAsTable(full_table)
+            )
+            spark.sql(f"DROP TABLE {full_table}_backup")

@@ -1,0 +1,48 @@
+"""Silver data model definitions."""
+from __future__ import annotations
+
+from data_platform.data_model.silver.aaru.tds_aaru_views import (
+    aggregate_silver_view,
+    correctionfactor_silver_view,
+    gates_silver_view,
+    generis_silver_view,
+    gridarea_silver_view,
+    meteo_fc_silver_view,
+    meteo_meas_silver_view,
+    meteoswisslocations_silver_view,
+    meterpoint_silver_view,
+    nlaggregate_silver_view,
+    nlprofile_silver_view,
+    profile_factor_silver_view,
+    profile_silver_view,
+    prototype_silver_view,
+    quality_silver_view,
+    register_silver_view,
+    timeseries_silver_view,
+    unit_silver_view,
+    values_silver_view,
+    versionrule_silver_view,
+)
+
+__all__ = [
+    "aggregate_silver_view",
+    "correctionfactor_silver_view",
+    "gates_silver_view",
+    "generis_silver_view",
+    "gridarea_silver_view",
+    "meteo_fc_silver_view",
+    "meteo_meas_silver_view",
+    "meteoswisslocations_silver_view",
+    "meterpoint_silver_view",
+    "nlaggregate_silver_view",
+    "nlprofile_silver_view",
+    "profile_factor_silver_view",
+    "profile_silver_view",
+    "prototype_silver_view",
+    "quality_silver_view",
+    "register_silver_view",
+    "timeseries_silver_view",
+    "unit_silver_view",
+    "values_silver_view",
+    "versionrule_silver_view",
+]

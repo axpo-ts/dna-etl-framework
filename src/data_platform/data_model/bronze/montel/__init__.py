@@ -1,0 +1,2 @@
+from data_platform.data_model.bronze.montel.contract_prices import contract_prices_table
+from data_platform.data_model.bronze.montel.trade_prices import trade_prices_table

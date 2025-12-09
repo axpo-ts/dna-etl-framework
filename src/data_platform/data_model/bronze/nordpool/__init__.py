@@ -1,0 +1,7 @@
+from data_platform.data_model.bronze.nordpool.flow import flow_table
+from data_platform.data_model.bronze.nordpool.flow_based_constraints import flow_based_constraints_table
+from data_platform.data_model.bronze.nordpool.physical_flow import physical_flow_table
+from data_platform.data_model.bronze.nordpool.spot_prices import spot_prices_table
+from data_platform.data_model.bronze.nordpool.system_prices import system_prices_table
+from data_platform.data_model.bronze.nordpool.system_turnover import system_turnover_table
+from data_platform.data_model.bronze.nordpool.trading_volume import trading_volume_table

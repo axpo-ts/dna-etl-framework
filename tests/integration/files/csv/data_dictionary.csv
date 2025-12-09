@@ -1,0 +1,7 @@
+"catalog_name"|"schema_name"|"table_name"|"column_name"|"column_comment"|"proposed_tag_key"|"proposed_tag_value"
+"dna_dev_bronze"|"volue"|"solar_production"|"curve_name"|"Name of the solar curve"|""|""
+"dna_dev_bronze"|"volue"|"solar_production"|"value_at"|"Timestamp for the corresponding value for solar production"|""|""
+"dna_dev_bronze"|"volue"|"solar_production"|"value"|"Value for solar production"|"PII"|"No PII"
+"dna_dev_bronze"|"volue"|"solar_production"|"value"|"Value for solar production"|"License"|"Licensed Data"
+"dna_dev_bronze"|"volue"|"solar_production"|"curve_type"|"Type of the solar curve e.g. ""time series"""|""|""
+"dna_dev_bronze"|"volue"|"solar_production"|"curve_type"|"Type of the solar curve e.g. ""time series"""|""|""

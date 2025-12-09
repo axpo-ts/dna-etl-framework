@@ -1,0 +1,1 @@
+from data_platform.data_model.bronze.tds.endur_raw_transaction import endur_raw_transaction_bronze_view

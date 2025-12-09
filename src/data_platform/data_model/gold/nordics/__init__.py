@@ -1,0 +1,1 @@
+from data_platform.data_model.gold.nordics.montel_trade_price import nordics_montel_trade_price_table

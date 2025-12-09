@@ -1,0 +1,12 @@
+[
+  {
+    "Schema": "input_namespace",
+    "Table": "input_df",
+    "Name": "primary_key_uniqueness",
+    "Constraint": "case when count(*) over (partition by primary_key order by name) > 1 THEN 1 ELSE Null END IS NOT NULL",
+    "Tag": "valid",
+    "Dimension": "UNIQUENESS",
+    "Description": "assert primary keys are unique",
+    "Enabled": true
+  }
+]

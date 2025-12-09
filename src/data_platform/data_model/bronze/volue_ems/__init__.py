@@ -1,0 +1,1 @@
+from data_platform.data_model.bronze.volue_ems.nordic_physical import nordic_physical_table

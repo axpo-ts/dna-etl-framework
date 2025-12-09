@@ -1,0 +1,2 @@
+from data_platform.data_model.bronze.meteologica.gfs_forecast import gfs_forecast_table
+from data_platform.data_model.bronze.meteologica.ecmwf_ens_forecast import ecmwf_ens_forecast_table

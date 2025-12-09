@@ -1,0 +1,5 @@
+description = "Ignore lines containing task_key or webhookb2*"
+  regexes = [
+    '''(?i)task_key''',
+    '''(?i)\bwebhookb2\w*'''
+  ]
