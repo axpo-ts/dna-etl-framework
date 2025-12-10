@@ -3,13 +3,13 @@ from dataclasses import dataclass, field
 from logging import Logger
 from typing import Any
 
-from data_platform.common import get_dbutils
-from data_platform.data_model import AbstractTableModel, FileVolumeIdentifier
-from data_platform.data_model.unity_catalog_identifier import UnityCatalogIdentifier
-from data_platform.etl.core.config_loader import ConfigLoader
-from data_platform.etl.core.config_logging import init_logging
-from data_platform.etl.core.config_logging_azure import close_azure_logger
-from data_platform.etl.core.utils import get_databricks_environment
+from etl.common import get_dbutils
+from data_model import AbstractTableModel, FileVolumeIdentifier
+from data_model.unity_catalog_identifier import UnityCatalogIdentifier
+from etl.core.config_loader import ConfigLoader
+from etl.core.config_logging import init_logging
+from etl.core.config_logging_azure import close_azure_logger
+from etl.core.utils import get_databricks_environment
 from opentelemetry import _logs as logs
 from opentelemetry.sdk._logs import LoggerProvider
 from opentelemetry.sdk._logs.export import BatchLogRecordProcessor

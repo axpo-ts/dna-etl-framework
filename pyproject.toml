@@ -1,6 +1,6 @@
 [project]
 name = "dna_etl_framework"
-version = "0.0.1.dev13"
+version = "0.0.1.dev5"
 description = "Config-driven runner for generic ETL tasks."
 authors = [
     { name = "Jared Magrath", email = "jared.magrath@colibridigital.io" },
@@ -51,12 +51,6 @@ license = { text = "Propriety" }
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
-[project.scripts]
-etl = "data_platform.task_runner:entrypoint"
-
-[tool.pdm]
-version = { source = "call", getter = "src.data_platform:get_version" }
-
 [tool.pdm.scripts]
 ruff = "ruff check ./src ./tests --fix"
 format = "ruff format ."
@@ -90,7 +84,7 @@ line-length = 120
 
 [tool.coverage.run]
 branch = true
-source = ["data_platform"]
+source = ["src"]
 
 [tool.coverage.report]
 
@@ -137,7 +131,7 @@ exclude = [
     "dist",
     "node_modules",
     "venv",
-    "src/data_platform/data_model/silver",
+    "src/data_model/silver",
 ]
 
 line-length = 120 # Use a line length of 120 characters.
@@ -179,7 +173,7 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["D"] # Ignore docstring and annotation rules in all directories named `tests`.
 "__init__.py" = ["ALL"] # Ignore all rules in `__init__.py` files.
-"src/data_platform/data_model/**" = ["E501"] # Ignore line-length for silver table models
+"src/data_model/**" = ["E501"] # Ignore line-length for silver table models
 [tool.ruff.lint.pydocstyle]
 convention = "google" # Use the Google docstring style.
 

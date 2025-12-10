@@ -127,7 +127,7 @@ class StaticTableModel(AbstractTableModel):
             >>> table_model.write(context, df, BatchTableUpsert, primary_keys=["id", "timestamp"], drop_duplicates=True)
 
             SCD Type 2 with class type:
-            >>> from data_platform.etl.load.table_writer import BatchTableWriteSCDType2
+            >>> from etl.load.table_writer import BatchTableWriteSCDType2
             >>> table_model.write(
             ...     context, df, BatchTableWriteSCDType2, valid_from_col="effective_date", current_col="is_active"
             ... )
@@ -141,7 +141,7 @@ class StaticTableModel(AbstractTableModel):
             ...     writer_options={"checkpointLocation": "/tmp/checkpoint"},
             ... )
         """
-        from data_platform.etl.load import table_writer
+        from etl.load import table_writer
 
         try:
             # Prepare common parameters that most writers expect

@@ -6,7 +6,6 @@ from databricks.sdk import WorkspaceClient  # type: ignore
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as f
 
-from etl.alerts.send_teams_alert import SendTeamsAlertTask
 from etl.transform import transform as transform_utils
 
 from ..etl_task import ETLTask
@@ -48,23 +47,6 @@ class ApplyDqxRulesTask(ETLTask):
             msg = "No data quality rule available for the schema and table, skipping this step."
             self.context.logger.info(msg)
 
-            if self.alerts_url:
-                SendTeamsAlertTask(
-                    context=self.context,
-                    teams_webhook_url=self.alerts_url,
-                    application_title="Data Quality Alert",
-                    message_sections_list=[
-                        {
-                            "activityTitle": "DQX Rules Application",
-                            "facts": [
-                                {"name": "Schema", "value": self.target_schema_name},
-                                {"name": "Table", "value": self.target_table_name},
-                                {"name": "Message", "value": msg},
-                            ],
-                            "markdown": True,
-                        }
-                    ],
-                ).execute()
             return self.source_df
 
         checks = self.create_checks(rules_config)

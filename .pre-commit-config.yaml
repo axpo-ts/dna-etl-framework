@@ -23,7 +23,7 @@ repos:
         args: [--fix]
       - id: ruff-format
         args: [--config, pyproject.toml]
-        exclude: "src/data_platform/data_model/silver/.*"
+        exclude: "src/data_model/silver/.*"
 
   - repo: https://github.com/sqlfluff/sqlfluff
     rev: 3.4.0
