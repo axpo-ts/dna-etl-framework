@@ -1,5 +1,5 @@
 [project]
-name = "dna_platform"
+name = "dna_etl_framework"
 version = "0.0.1.dev13"
 description = "Config-driven runner for generic ETL tasks."
 authors = [
@@ -58,19 +58,18 @@ etl = "data_platform.task_runner:entrypoint"
 version = { source = "call", getter = "src.data_platform:get_version" }
 
 [tool.pdm.scripts]
-ruff = "ruff check ./src ./tests ./resources --fix"
+ruff = "ruff check ./src ./tests --fix"
 format = "ruff format ."
 sqlfluff = "sqlfluff fix ."
 sqlfluff_check = "sqlfluff lint ."
 lint = { composite = ["format", "ruff"] }
-ruff_check = "ruff check ./src ./tests ./resources"
+ruff_check = "ruff check ./src ./tests"
 format_check = "ruff format --check ."
 lint_check = {composite = ["ruff_check", "sqlfluff_check"]}
 unit_test = "pytest -v tests/unit --cov=catalix --cov-report=html"
 module_unit_test = "pytest -v tests/unit/test_dlt_functions.py --cov=catalix.test_dlt_functions --cov-report=html"
 one_unit_test = "pytest -v tests/unit -k 'test_create_schema_task' --cov=catalix --cov-report=html"
 coverage_check = "coverage report -m --fail-under=80"
-
 
 [tool.pdm.group.test.dependencies]
 pytest = ">=8.2.2"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BUNDLE_FILE="${1:-databricks.yml}"
+ENV_CATALOG_IDENTIFIER="${1:-dna_dev}"
 TARGET="${2:-personal_dev}"
 
 if ! command -v yq >/dev/null 2>&1; then
@@ -12,10 +12,7 @@ if ! command -v databricks >/dev/null 2>&1; then
   echo "databricks CLI is required on PATH"; exit 1
 fi
 
-# 1. Resolve ENV_CATALOG_IDENTIFIER and ENV_SCHEMA_PREFIX_WITH_DEV
-ENV_CATALOG_IDENTIFIER=$(yq '.targets.'"${TARGET}"'.variables.ENV_CATALOG_IDENTIFIER // ""' "$BUNDLE_FILE")
-ENV_SCHEMA_PREFIX_WITH_DEV=$(yq '.targets.'"${TARGET}"'.variables.ENV_SCHEMA_PREFIX_WITH_DEV // ""' "$BUNDLE_FILE")
-
+# 1. Resolve catalog, schema, volume names
 if [[ -z "$ENV_CATALOG_IDENTIFIER" ]]; then
   echo "ENV_CATALOG_IDENTIFIER not set for target ${TARGET}"; exit 1
 fi
